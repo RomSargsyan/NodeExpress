@@ -14,6 +14,7 @@ app.engine('hbs', hbs.engine);
 app.set('view engine', 'hbs')
 
 app.use(express.static('public'));
+app.use(express.urlencoded({extended: true}))
 
 app.use('/', homeRouter);
 app.use('/courses', coursesRouter);
@@ -27,5 +28,4 @@ const PORT = process.env.PORT || 3000;
 
 app.listen(3000, () => {
     console.log(`server lisining port ${PORT}`);
-    
 })
