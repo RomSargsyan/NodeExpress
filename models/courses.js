@@ -1,0 +1,65 @@
+const uuid = require('uuid/v4');
+const fs = require('fs');
+const path = require('path')
+
+class Courses {
+    constructor(title, price, imgURL) {
+        this.title = title
+        this.price = price
+        this.imgURL = imgURL
+        this.id = uuid();
+    }
+    
+    toJSON() {
+        return {
+            title: this.title,
+            price: this.price,
+            imgURL: this.imgURL,
+            id: this.id
+        }
+    }
+
+    async save() {
+        const courses = await Courses.getAll();
+        courses.push(this.toJSON())
+        
+        return new Promise((resolve, reject) =>{
+            fs.writeFile(
+                path.join(__dirname, '..', 'data', 'courses.json'),
+                JSON.stringify(courses),
+                (err) => {
+                    if (err) {
+                        reject(err)
+                    } else {
+                        resolve();
+                    }
+                }
+            )
+
+        })
+    }
+    
+    static getAll() {
+        return new Promise((resolve, reject) => {
+            fs.readFile(
+                path.join(__dirname, '..', 'data', 'courses.json'),
+                'utf-8',
+                (err, data) => {
+                   if (err) {
+                       reject(err)
+                   } else {
+                       resolve(JSON.parse(data))
+                   }
+                }
+            )
+        })
+    }
+
+    static async getCourseById(id) {
+        const course =  await Courses.getAll();
+        return course.find(el => el.id === id);
+    }
+
+}
+
+module.exports = Courses;
