@@ -21,4 +21,22 @@ route.get('/:id', async (req, res) => {
     })
 });
 
+route.get('/:id/edit', async (req, res) => {
+    const course = await Courses.getCourseById(req.params.id)
+    
+    if (!req.query.allow) {
+        res.redirect('/')
+    } else {
+        res.render('edit', {
+            title: `Edit ${course.title}`,
+            course
+        } )
+    }
+})
+
+route.post('/', async (req, res) => {
+    const course = await Courses.update(req.body)
+    res.redirect('/courses')
+})
+
 module.exports = route;
