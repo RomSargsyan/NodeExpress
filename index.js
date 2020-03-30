@@ -7,6 +7,8 @@ const addRouter = require('./routes/add');
 const basketRouter = require('./routes/basket');
 const homeRouter = require('./routes/home');
 const coursesRouter = require('./routes/courses');
+const basketRouter = require('./routes/basket');
+const addRouter = require('./routes/add');
 
 
 const app = express();
