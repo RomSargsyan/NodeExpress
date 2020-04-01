@@ -14,19 +14,20 @@ if ($basket) {
     $basket.addEventListener('click', event => {
         if (event.target.classList.contains('js-remove')) {
             const id = event.target.dataset.id;
+
             fetch('/basket/remove/' + id, {
                 method: 'delete'
-            })
+              })
                 .then(res => res.json())
                 .then(basket => {
                     if (basket.courses.length) {
-                        const html = basket.courses.map(el => {
+                        const html = basket.courses.map(course => {
                         return `
                             <tr>
-                                <th>${el.title}</th>
-                                <th>${el.count}</th>
+                                <th>${course.title}</th>
+                                <th>${course.count}</th>
                                 <th>
-                                    <button class="btn btm-small js-remove" data-id="${id}">Remove</button>
+                                    <button class="btn btm-small js-remove" data-id="${course.id}">Remove</button>
                                 </th>
                             </tr>
                             `

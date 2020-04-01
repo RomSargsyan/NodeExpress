@@ -11,10 +11,21 @@ route.get('/', (req, res) => {
 });
 
 route.post('/', async (req, res) => {
-    const courses = await new Courses(req.body.title, req.body.price, req.body.imgURL )
-    courses.save();
+    const courses = await new Courses({
+        title: req.body.title,
+        price: req.body.price,
+        img: req.body.img,
+        userId: req.user._id
+    })
 
-    res.redirect('/courses')
+    try {
+        await courses.save();
+        res.redirect('/courses')    
+    } catch (err) {
+        console.log(err);
+        
+    }
+    
 })
 
 module.exports = route;

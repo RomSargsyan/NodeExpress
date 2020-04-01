@@ -1,25 +1,33 @@
 <h1>Edit {{course.title}}</h1>
+<div class="edit">
+    <form action="/courses" method="POST">
+        <div class="input-field">
+            <input id="{{course.title}}" name="title" type="text" class="validate" value="{{course.title}}">
+            <label for="{{course.title}}">Course name</label>
+            <span class="helper-text" data-error="Write courses name"></span>
+        </div>
 
-<form action="/courses" method="POST">
-     <div class="input-field">
-        <input id="{{course.title}}" name="title" type="text" class="validate" value="{{course.title}}">
-        <label for="{{course.title}}">Course name</label>
-        <span class="helper-text" data-error="Write courses name"></span>
-    </div>
+        <div class="input-field">
+            <input id="{{course.price}}" name="price" type="number" min="1" class="validate" required
+                value="{{course.price}}">
+            <label for="{{course.price}}">Price</label>
+            <span class="helper-text" data-error="Write price"></span>
+        </div>
 
-    <div class="input-field">
-        <input id="{{course.price}}" name="price" type="number" min="1"  class="validate" required  value="{{course.price}}"">
-        <label for="{{course.price}}">Price</label>
-        <span class="helper-text" data-error="Write price"></span>
-    </div>
+        <div class="input-field">
+            <input id="{{course.img}}" name="img" type="text" class="validate" required value="{{course.img}}">
+            <label for="{{course.img}}">Image URL</label>
+            <span class="helper-text" data-error="Write image URL"></span>
+        </div>
 
-    <div class="input-field">
-        <input id="{{course.imgURL}}" name="imgURL" type="text" class="validate" required value="{{course.imgURL}}">
-        <label for="{{course.imgURL}}">Image URL</label>
-        <span class="helper-text" data-error="Write image URL"></span>
-    </div>
+        <input type="hidden" name="id" value={{course.id}}>
 
+        <button class="btn btn-primary">Edit</button>
+    </form>
+</div>
+
+<form action="/courses/remove" method="POST">
     <input type="hidden" name="id" value={{course.id}}>
 
-    <button class="btn btn-primary">Edit</button>
+    <button class="btn red">Remove</button>
 </form>
