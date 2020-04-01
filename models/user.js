@@ -55,4 +55,9 @@ user.methods.removeFromBasket = function (id) {
     return this.save();
 }
 
+user.methods.clearBasket = function () {
+    this.basket.items = [];
+    return this.save();
+}
+
 module.exports = model('User', user)

@@ -9,6 +9,7 @@ const { allowInsecurePrototypeAccess } = require('@handlebars/allow-prototype-ac
 const User = require('./models/user');
 const addRouter = require('./routes/add');
 const homeRouter = require('./routes/home');
+const ordersRouter = require('./routes/orders');
 const basketRouter = require('./routes/basket');
 const coursesRouter = require('./routes/courses');
 
@@ -39,6 +40,7 @@ app.use(express.urlencoded({ extended: true }))
 
 app.use('/', homeRouter);
 app.use('/add', addRouter);
+app.use('/orders', ordersRouter);
 app.use('/basket', basketRouter);
 app.use('/courses', coursesRouter);
 
