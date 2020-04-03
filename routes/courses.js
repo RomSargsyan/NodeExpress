@@ -1,5 +1,8 @@
 const {Router} = require('express');
-const Courses = require('../models/courses')
+
+const Courses = require('../models/courses');
+const auth = require('./../middleware/auth');
+
 const route = Router();
 
 route.get('/', async (req, res) => {
@@ -23,7 +26,7 @@ route.get('/:id', async (req, res) => {
     })
 });
 
-route.get('/:id/edit', async (req, res) => {
+route.get('/:id/edit', auth, async (req, res) => {
     const course = await Courses.findById(req.params.id)
     
     if (!req.query.allow) {
@@ -36,7 +39,7 @@ route.get('/:id/edit', async (req, res) => {
     }
 })
 
-route.post('/', async (req, res) => {
+route.post('/', auth, async (req, res) => {
     const {id} = req.body;
     delete req.body.id;
 
@@ -44,7 +47,7 @@ route.post('/', async (req, res) => {
     res.redirect('/courses')
 })
 
-route.post('/remove', async (req, res) => {
+route.post('/remove', auth, async (req, res) => {
     const course = await Courses.findByIdAndRemove(req.body.id)
     res.redirect('/courses')
 })

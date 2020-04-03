@@ -29,9 +29,13 @@ if ($basket) {
     $basket.addEventListener('click', event => {
         if (event.target.classList.contains('js-remove')) {
             const id = event.target.dataset.id;
+            const csrf = event.target.dataset.csrf;
 
             fetch('/basket/remove/' + id, {
-                method: 'delete'
+                method: 'delete',
+                headers: {
+                    'X-XSRF-TOKEN': csrf
+                }
             })
                 .then(res => res.json())
                 .then(basket => {
@@ -42,13 +46,19 @@ if ($basket) {
                                 <th>${course.title}</th>
                                 <th>${course.count}</th>
                                 <th>
-                                    <button class="btn btm-small js-remove" data-id="${course.id}">Remove</button>
+                                    <button 
+                                        class="btn btm-small js-remove" 
+                                        data-id="${course.id}" 
+                                        data-csrf="${csrf}"
+                                    >
+                                        Remove
+                                    </button>
                                 </th>
                             </tr>
                             `
                         }).join('')
                         $basket.querySelector('tbody').innerHTML = html;
-                        $basket.querySelector('.price').textContent = toCarrency(basket.price)
+                        $basket.querySelector('.price').textContent = toPriceCarrency(basket.price)
                     } else {
                         $basket.innerHTML = '<strong>Your basket is empty</strong>'
                     }
@@ -57,3 +67,5 @@ if ($basket) {
         }
     })
 }
+
+M.Tabs.init(document.querySelectorAll('.tabs'));

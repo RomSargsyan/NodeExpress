@@ -1,6 +1,7 @@
 const { Router } = require('express');
 
 const Orders = require('./../models/orders');
+const auth = require('./../middleware/auth');
 
 const route = Router();
 
@@ -12,7 +13,7 @@ const mapToCourses = (basket) => {
     }))
 }
 
-route.get('/', async (req, res) => {
+route.get('/', auth, async (req, res) => {
     const orders = await Orders.find();
 
     res.render('orders', {
@@ -22,7 +23,7 @@ route.get('/', async (req, res) => {
     })
 })
 
-route.post('/', async (req, res) => {
+route.post('/', auth, async (req, res) => {
 
     try {
         const user = await req.user

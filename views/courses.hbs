@@ -13,11 +13,14 @@
                 </div>
                 <div class="card-action actions">
                     <a href="/courses/{{_id}}" target="_blank">Open course</a>
-                    <a href="/courses/{{_id}}/edit?allow=true">Edit course</a>
-                    <form action="/basket" method="POST">
-                        <input type="hidden" name="id" data-id={{_id}} value="{{_id}}" />
-                        <button class="btn btm-small">buy</button>
-                    </form>
+                    {{#if @root.isAuth}}
+                        <a href="/courses/{{_id}}/edit?allow=true">Edit course</a>
+                        <form action="/basket" method="POST">
+                            <input type="hidden" name="id" data-id={{_id}} value="{{_id}}" />
+                            <input type="hidden" name="_csrf" value="{{@root.csrf}}">
+                            <button class="btn btm-small">buy</button>
+                        </form>
+                    {{/if}}
                 </div>
             </div>
         </div>

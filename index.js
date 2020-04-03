@@ -2,17 +2,27 @@ const path = require('path');
 const express = require('express');
 const mongoose = require('mongoose');
 const handlebars = require('handlebars')
+const session = require('express-session');
 const exhbs = require('express-handlebars');
-const { allowInsecurePrototypeAccess } = require('@handlebars/allow-prototype-access')
+const MongoDBStore = require('connect-mongodb-session')(session);
+const { allowInsecurePrototypeAccess } = require('@handlebars/allow-prototype-access');
+
+//middleware
+const csrf = require('csurf');
+const flash = require('express-flash');
+const userMiddleware = require('./middleware/user');
+const varMiddleware = require('./middleware/variable');
 
 
-const User = require('./models/user');
+//routes
 const addRouter = require('./routes/add');
 const homeRouter = require('./routes/home');
+const authRouter = require('./routes/auth');
 const ordersRouter = require('./routes/orders');
 const basketRouter = require('./routes/basket');
 const coursesRouter = require('./routes/courses');
 
+const MONGOGB_URI = 'mongodb+srv://RomSargsyan:HvcWwxiKztKjgEgL@cluster0-exdtt.mongodb.net/shop';
 
 const app = express();
 const hbs = exhbs.create({
@@ -24,53 +34,48 @@ const hbs = exhbs.create({
 app.engine('hbs', hbs.engine);
 app.set('view engine', 'hbs');
 
-app.use(async (req, res, next) => {
-    try {
-        const user = await User.findById('5e835ce84b72ff26045caff0');
-        req.user = user;
-        next();
-    } catch (err) {
-        console.log(err);
-        
-    }
-})
-
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(express.urlencoded({ extended: true }))
+app.use(express.urlencoded({ extended: true }));
 
+const store = new MongoDBStore({
+    uri: MONGOGB_URI,
+    collection: 'session',
+  });
+
+app.use(session({
+    secret: 'keyboard cat',
+    resave: false,
+    saveUninitialized: false,
+    store
+}));
+
+//middleware
+app.use(csrf());
+app.use(flash());
+app.use(userMiddleware);
+app.use(varMiddleware);
+
+//routes
 app.use('/', homeRouter);
 app.use('/add', addRouter);
+app.use('/auth', authRouter);
 app.use('/orders', ordersRouter);
 app.use('/basket', basketRouter);
 app.use('/courses', coursesRouter);
 
 app.get('/about', (req, res) => {
     res.render('about')
-})
+});
 
 const PORT = process.env.PORT || 3000;
 
 async function start() {
     try {
-        const url = 'mongodb+srv://RomSargsyan:HvcWwxiKztKjgEgL@cluster0-exdtt.mongodb.net/shop';
-
-        mongoose.connect(url, {
+        mongoose.connect(MONGOGB_URI, {
             useUnifiedTopology: true,
             useNewUrlParser: true,
             useFindAndModify: false
         })
-
-        const candidate = await User.findOne();
-        if (!candidate) {
-            const user = await new User({
-                email: 'romsargsayn@mail.ru',
-                name: 'Rom',
-                basket: { items: [] }
-            })
-
-            await user.save();
-        }
-
 
         app.listen(3000, () => {
             console.log(`server lisining port ${PORT}`);

@@ -1,6 +1,7 @@
 const { Router } = require('express');
 
-const Course = require('../models/courses')
+const Course = require('../models/courses');
+const auth = require('./../middleware/auth');
 
 const route = Router();
 
@@ -19,7 +20,7 @@ const computePrice = (courses) => {
     }, 0)
 }
 
-route.get('/', async (req, res) => {
+route.get('/', auth, async (req, res) => {
     const user = await req.user
         .populate('basket.items.courseId')
         .execPopulate()
@@ -35,15 +36,15 @@ route.get('/', async (req, res) => {
     })
 })
 
-route.post('/', async (req, res) => {
+route.post('/', auth, async (req, res) => {
     const course = await Course.findById(req.body.id);
-    await req.user.addToBasket(course)
+    await req.user.addToBasket(course);
 
-    res.redirect('/basket')
+    res.redirect('/basket');
 })
 
 
-route.delete('/remove/:id', async (req, res) => {
+route.delete('/remove/:id', auth, async (req, res) => {
     await req.user.removeFromBasket(req.params.id);
     const user = await req.user
         .populate('basket.items.courseId')

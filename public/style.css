@@ -31,3 +31,17 @@
     margin-bottom: 1.5rem;
 }
 
+.auth {
+    padding-top: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.alert {
+    border-radius: 10px;
+    border: 1px solid #fff;
+    background: rgb(255, 0, 0, .3); 
+    align-items: center;
+    text-align: center;
+    padding: 10px 20px;
+}
+
