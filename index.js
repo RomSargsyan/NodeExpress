@@ -7,12 +7,13 @@ const exhbs = require('express-handlebars');
 const MongoDBStore = require('connect-mongodb-session')(session);
 const { allowInsecurePrototypeAccess } = require('@handlebars/allow-prototype-access');
 
+const keys = require('./keys');
+
 //middleware
 const csrf = require('csurf');
 const flash = require('express-flash');
 const userMiddleware = require('./middleware/user');
 const varMiddleware = require('./middleware/variable');
-
 
 //routes
 const addRouter = require('./routes/add');
@@ -22,13 +23,12 @@ const ordersRouter = require('./routes/orders');
 const basketRouter = require('./routes/basket');
 const coursesRouter = require('./routes/courses');
 
-const MONGOGB_URI = 'mongodb+srv://RomSargsyan:HvcWwxiKztKjgEgL@cluster0-exdtt.mongodb.net/shop';
-
 const app = express();
 const hbs = exhbs.create({
     defaultLayout: 'main',
     extname: 'hbs',
-    handlebars: allowInsecurePrototypeAccess(handlebars)
+    handlebars: allowInsecurePrototypeAccess(handlebars),
+    helpers: require('./utils/helperHbs')
 });
 
 app.engine('hbs', hbs.engine);
@@ -38,12 +38,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({ extended: true }));
 
 const store = new MongoDBStore({
-    uri: MONGOGB_URI,
+    uri: keys.MONGOGB_URI,
     collection: 'session',
-  });
+});
 
 app.use(session({
-    secret: 'keyboard cat',
+    secret: keys.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
     store
@@ -71,7 +71,7 @@ const PORT = process.env.PORT || 3000;
 
 async function start() {
     try {
-        mongoose.connect(MONGOGB_URI, {
+        mongoose.connect(keys.MONGOGB_URI, {
             useUnifiedTopology: true,
             useNewUrlParser: true,
             useFindAndModify: false
@@ -82,8 +82,6 @@ async function start() {
         })
     } catch (err) {
         console.log(err);
-
-
     }
 
 }

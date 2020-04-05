@@ -1,4 +1,4 @@
-const {Router} = require('express');
+const { Router } = require('express');
 
 const Courses = require('../models/courses');
 const auth = require('./../middleware/auth');
@@ -6,50 +6,72 @@ const auth = require('./../middleware/auth');
 const route = Router();
 
 route.get('/', async (req, res) => {
-    const courses = await Courses.find()
-        .populate('userId', 'email name')
-        .select('title price img');
-    res.render('courses', {
-        title: 'Courses',
-        isCourses: true,
-        courses
-    })
+    try {
+        const courses = await Courses.find()
+            .populate('userId', 'email name')
+            .select();
+
+        res.render('courses', {
+            title: 'Courses',
+            isCourses: true,
+            courses,
+            userId: req.session.user._id
+        })
+    } catch (err) {
+        console.log(err);
+    }
 });
 
 route.get('/:id', async (req, res) => {
-    const course = await Courses.findById(req.params.id)
-    
-    res.render('course', {
-        layout: 'empty',
-        title: `Course ${course.title}` ,
-        course
-    })
+    try {
+        const course = await Courses.findById(req.params.id)
+
+        res.render('course', {
+            layout: 'empty',
+            title: `Course ${course.title}`,
+            course
+        })
+    } catch (err) {
+        console.log(err);
+    }
 });
 
 route.get('/:id/edit', auth, async (req, res) => {
     const course = await Courses.findById(req.params.id)
     
-    if (!req.query.allow) {
-        res.redirect('/')
+    if (course.userId.toString() !== req.user._id.toString()) {
+        res.redirect('/courses')
     } else {
-        res.render('edit', {
-            title: `Edit ${course.title}`,
-            course
-        } )
+        if (!req.query.allow) {
+            res.redirect('/')
+        } else {
+            res.render('edit', {
+                title: `Edit ${course.title}`,
+                course
+            })
+        }
     }
 })
 
 route.post('/', auth, async (req, res) => {
-    const {id} = req.body;
-    delete req.body.id;
-
-    const course = await Courses.findByIdAndUpdate(id, req.body)
-    res.redirect('/courses')
+    try {
+        const { id } = req.body;
+        delete req.body.id;
+        
+        const course = await Courses.findByIdAndUpdate(id, req.body)
+        res.redirect('/courses')
+    } catch (err) {
+        console.log(err);
+    }
 })
 
 route.post('/remove', auth, async (req, res) => {
-    const course = await Courses.findByIdAndRemove(req.body.id)
-    res.redirect('/courses')
+    try {
+        await Courses.findByIdAndRemove(req.body.id)
+        res.redirect('/courses')
+    } catch (err) {
+        console.log(err);
+    }
 })
 
 module.exports = route;

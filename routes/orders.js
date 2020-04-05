@@ -3,18 +3,17 @@ const { Router } = require('express');
 const Orders = require('./../models/orders');
 const auth = require('./../middleware/auth');
 
-const route = Router();
+const router = Router();
 
 const mapToCourses = (basket) => {
     return basket.items.map(item => ({
         course: { ...item.courseId._doc },
         count: item.count
-
     }))
 }
 
-route.get('/', auth, async (req, res) => {
-    const orders = await Orders.find();
+router.get('/', auth, async (req, res) => {
+    const orders = await Orders.find({'user.userId': req.user._id}).populate('user.userId');
 
     res.render('orders', {
         title: 'Orders',
@@ -23,8 +22,7 @@ route.get('/', auth, async (req, res) => {
     })
 })
 
-route.post('/', auth, async (req, res) => {
-
+router.post('/', auth, async (req, res) => {
     try {
         const user = await req.user
             .populate('basket.items.courseId')
@@ -38,7 +36,6 @@ route.post('/', auth, async (req, res) => {
         const order = await new Orders({
             courses,
             user: {
-                name: user.name,
                 userId: user._id
             },
             price
@@ -53,4 +50,4 @@ route.post('/', auth, async (req, res) => {
 
 })
 
-module.exports = route;
+module.exports = router;
