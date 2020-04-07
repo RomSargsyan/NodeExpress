@@ -12,6 +12,7 @@ const keys = require('./keys');
 //middleware
 const csrf = require('csurf');
 const flash = require('express-flash');
+const errorHandler = require('./middleware/error');
 const userMiddleware = require('./middleware/user');
 const varMiddleware = require('./middleware/variable');
 
@@ -22,6 +23,7 @@ const authRouter = require('./routes/auth');
 const ordersRouter = require('./routes/orders');
 const basketRouter = require('./routes/basket');
 const coursesRouter = require('./routes/courses');
+
 
 const app = express();
 const hbs = exhbs.create({
@@ -62,10 +64,8 @@ app.use('/auth', authRouter);
 app.use('/orders', ordersRouter);
 app.use('/basket', basketRouter);
 app.use('/courses', coursesRouter);
+app.use(errorHandler);
 
-app.get('/about', (req, res) => {
-    res.render('about')
-});
 
 const PORT = process.env.PORT || 3000;
 

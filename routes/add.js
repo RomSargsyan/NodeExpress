@@ -8,7 +8,7 @@ const { coursesValidator } = require('../utils/validator');
 const route = Router();
 
 route.get('/', auth, (req, res) => {
-    res.render('add', {
+    res.render('courses/add', {
         title: 'Add Courses',
         isAdd: true,
         error: req.flash('error'),

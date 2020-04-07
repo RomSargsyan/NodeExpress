@@ -11,7 +11,7 @@ route.get('/', async (req, res) => {
             .populate('userId', 'email name')
             .select();
 
-        res.render('courses', {
+        res.render('courses/courses', {
             title: 'Courses',
             isCourses: true,
             courses,
@@ -26,7 +26,7 @@ route.get('/:id', async (req, res) => {
     try {
         const course = await Courses.findById(req.params.id)
 
-        res.render('course', {
+        res.render('courses/course', {
             layout: 'empty',
             title: `Course ${course.title}`,
             course
@@ -40,12 +40,12 @@ route.get('/:id/edit', auth, async (req, res) => {
     const course = await Courses.findById(req.params.id)
     
     if (course.userId.toString() !== req.user._id.toString()) {
-        res.redirect('/courses')
+        res.redirect('courses/courses')
     } else {
         if (!req.query.allow) {
             res.redirect('/')
         } else {
-            res.render('edit', {
+            res.render('courses/edit', {
                 title: `Edit ${course.title}`,
                 course
             })
