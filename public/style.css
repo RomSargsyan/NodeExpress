@@ -45,3 +45,8 @@
     padding: 10px 20px;
 }
 
+
+.avatar {
+    max-width: 400px;
+    align-items: center;
+}
