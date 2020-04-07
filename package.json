@@ -19,6 +19,7 @@
     "express-flash": "^0.0.2",
     "express-handlebars": "^3.1.0",
     "express-session": "^1.17.0",
+    "express-validator": "^6.4.0",
     "handlebars": "^4.7.3",
     "mongoose": "^5.9.6",
     "nodemailer": "^6.4.6",
