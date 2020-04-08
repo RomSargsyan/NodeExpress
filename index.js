@@ -1,6 +1,3 @@
-const bodyParser = require('body-parser')
-const cookieParser = require('cookie-parser')
-
 const path = require('path');
 const express = require('express');
 const mongoose = require('mongoose');
@@ -14,7 +11,9 @@ const keys = require('./keys');
 
 //middleware
 const csrf = require('csurf');
+const helmet = require('helmet');
 const flash = require('express-flash');
+const compression = require('compression');
 const errorHandler = require('./middleware/error');
 const userMiddleware = require('./middleware/user');
 const fileMiddelware = require('./middleware/file');
@@ -58,11 +57,10 @@ app.use(session({
 }));
 
 //middleware
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(cookieParser());
-app.use(csrf({ cookie: true }));
-// app.use(csrf());
+app.use(csrf());
 app.use(flash());
+app.use(helmet());
+app.use(compression());
 app.use(varMiddleware);
 app.use(userMiddleware);
 app.use(fileMiddelware.single('avatar'));

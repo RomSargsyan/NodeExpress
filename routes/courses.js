@@ -15,7 +15,7 @@ route.get('/', async (req, res) => {
             title: 'Courses',
             isCourses: true,
             courses,
-            userId: req.session.user._id
+            userId: req.user ? req.user._id.toString() : null,
         })
     } catch (err) {
         console.log(err);
