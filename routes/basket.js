@@ -1,61 +1,11 @@
 const { Router } = require('express');
-
-const Course = require('../models/courses');
 const auth = require('./../middleware/auth');
+const basket = require('../controllers/basket');
 
 const route = Router();
 
-const mapToCourses = (basket) => {
-    return basket.items.map(item => ({
-        ...item.courseId._doc,
-        id: item.courseId.id,
-        count: item.count
-
-    }))
-}
-
-const computePrice = (courses) => {
-    return courses.reduce((total, course) => {
-        return total += course.price * course.count
-    }, 0)
-}
-
-route.get('/', auth, async (req, res) => {
-    const user = await req.user
-        .populate('basket.items.courseId')
-        .execPopulate()
-
-    const courses = mapToCourses(user.basket);
-    const price = computePrice(courses);
-
-    res.render('basket', {
-        title: 'basket',
-        isCard: true,
-        courses,
-        price
-    })
-})
-
-route.post('/', auth, async (req, res) => {
-    const course = await Course.findById(req.body.id);
-    await req.user.addToBasket(course);
-
-    res.redirect('/basket');
-})
-
-
-route.delete('/remove/:id', auth, async (req, res) => {
-    await req.user.removeFromBasket(req.params.id);
-    const user = await req.user
-        .populate('basket.items.courseId')
-        .execPopulate();
-
-    const courses = mapToCourses(user.basket);
-    const basket = {
-        courses, price: computePrice(courses)
-    }
-    res.status(200).json(basket)
-})
-
+route.get('/', auth, basket.basketGet);
+route.post('/', auth, basket.basketPost);
+route.delete('/remove/:id', auth, basket.basketDelete);
 
 module.exports = route;
