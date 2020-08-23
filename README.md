@@ -24,6 +24,6 @@ $ npm run dev
   Check out some themed installs in these screenshots below:
 
 <img src="public/screenshots/Login.png" width=300>   <img src="public/screenshots/Edit.png" width=300>
-<img src="public/screenshots/Register.png" width=300>   <img src="public/screenshots/Basket.png" width=300>
+<img src="public/screenshots/register.png" width=300>   <img src="public/screenshots/basket.png" width=300>
 <img src="public/screenshots/AddCourses.png" width=300>   <img src="public/screenshots/Orders.png" width=300>
 <img src="public/screenshots/Profile.png" width=300>       <img src="public/screenshots/Courses.png" width=300>  
